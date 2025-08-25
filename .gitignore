@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+.env.*
+
+# IDE/OS
+.vscode/
+.DS_Store
+Thumbs.db
+.ipynb_checkpoints/
+
+# Data & modèles (si pas LFS)
+models/*.pkl
+models/*.joblib
+data/*
+
+# Terraform (NE JAMAIS versionner ces fichiers)
+infra/.terraform/
+infra/.terraform.*
+infra/*.tfstate
+infra/*.tfstate.*
+infra/terraform.tfvars
+infra/crash.log
+
+# Docker
+**/.dockerignore

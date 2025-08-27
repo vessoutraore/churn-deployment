@@ -10,15 +10,36 @@ from math import exp
 # -----------------------------
 # Chargement des artefacts
 # -----------------------------
+# -----------------------------
+# Chargement des artefacts (robuste)
+# -----------------------------
+import os
+from pathlib import Path
+
+# Dossier du fichier courant: .../churn/api
+HERE = Path(__file__).resolve().parent
+# Dossier models: .../churn/models
+DEFAULT_MODELS_DIR = HERE.parent / "models"
+
+MODEL_PATH    = Path(os.getenv("MODEL_PATH",    str(DEFAULT_MODELS_DIR / "model_churn.pkl")))
+SCALER_PATH   = Path(os.getenv("SCALER_PATH",   str(DEFAULT_MODELS_DIR / "scaler.pkl")))
+ENCODERS_PATH = Path(os.getenv("ENCODERS_PATH", str(DEFAULT_MODELS_DIR / "encoders.pkl")))
+
+def _must_exist(p: Path, label: str):
+    if not p.exists():
+        raise FileNotFoundError(f"{label} introuvable: {p}")
+    return p
+
 try:
-    with open("model_churn.pkl", "rb") as f:
+    with open(_must_exist(MODEL_PATH, "Modèle"), "rb") as f:
         model = pickle.load(f)
-    with open("scaler.pkl", "rb") as f:
+    with open(_must_exist(SCALER_PATH, "Scaler"), "rb") as f:
         scaler = pickle.load(f)
-    with open("encoders.pkl", "rb") as f:
+    with open(_must_exist(ENCODERS_PATH, "Encoders"), "rb") as f:
         encoders = pickle.load(f)
 except Exception as e:
     raise RuntimeError(f"Erreur de chargement des artefacts: {e}")
+
 
 # -----------------------------
 # FastAPI app + CORS

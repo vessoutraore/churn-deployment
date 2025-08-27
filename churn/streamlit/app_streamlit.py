@@ -1,9 +1,13 @@
-# app_streamlit.py
+# --- app_streamlit.py (ENTÊTE PROPRE & ROBUSTE) ---
+
+import os
 import json
 import time
 import pickle
-import requests
+from pathlib import Path
+
 import numpy as np
+import requests
 import streamlit as st
 
 # -----------------------------
@@ -19,8 +23,19 @@ st.set_page_config(
 # -----------------------------
 # UTILITAIRES
 # -----------------------------
+# Fichier encoders par défaut : ../models/encoders.pkl par rapport à CE script
+DEFAULT_ENCODERS_PATH = Path(__file__).resolve().parents[1] / "models" / "encoders.pkl"
+ENCODERS_PATH = Path(os.getenv("ENCODERS_PATH", str(DEFAULT_ENCODERS_PATH)))
+
 @st.cache_resource(show_spinner=False)
-def load_encoders(path: str = "encoders.pkl"):
+def load_encoders(path: Path = ENCODERS_PATH):
+    path = Path(path)
+    if not path.exists():
+        st.error(
+            f"Encoders introuvables : {path}\n"
+            "➡️ Place 'encoders.pkl' dans 'churn/models/' ou définis ENCODERS_PATH."
+        )
+        st.stop()
     with open(path, "rb") as f:
         return pickle.load(f)
 
@@ -37,16 +52,19 @@ def to_native_types(d: dict) -> dict:
     return out
 
 def get_json(url: str, timeout: float = 5):
+    """GET JSON avec gestion d'erreur"""
     r = requests.get(url, timeout=timeout)
     r.raise_for_status()
     return r.json()
 
 def post_json(url: str, payload: dict, timeout: float = 10):
+    """POST JSON avec gestion d'erreur"""
     r = requests.post(url, json=payload, timeout=timeout)
     r.raise_for_status()
     return r.json()
 
 def badge(label: str) -> str:
+    """Retourne un badge HTML coloré selon la prédiction"""
     color = "#f43f5e" if label.lower() == "churn" else "#10b981"
     return f"""
     <span style="
@@ -60,6 +78,7 @@ def badge(label: str) -> str:
         {label}
     </span>
     """
+# --- FIN ENTÊTE PROPRE ---
 
 # -----------------------------
 # DONNÉES / ENCODERS

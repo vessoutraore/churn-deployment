@@ -53,8 +53,6 @@ L’infrastructure est automatisée via **Terraform** et déployée sur **AWS EC
 
 ![Streamlit Screenshot](./docs/images/streamlit-dashboard.png)
 
-👉 *(Ajoute tes vraies captures dans `docs/images/` pour les afficher ici)*
-
 ---
 
 ## ⚙️ Installation locale

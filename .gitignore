@@ -28,3 +28,17 @@ infra/crash.log
 
 # Docker
 **/.dockerignore
+
+# Artefacts de modèles
+*.pkl
+*.joblib
+
+# Données
+*.csv
+*.parquet
+
+# Fichiers de config locaux
+.env
+
+# Dossier models (si tu ne veux pas pousser les fichiers lourds)
+churn/models/
